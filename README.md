@@ -1,13 +1,13 @@
 
 
 <h1 align="center">feflow-devkit-xbc-webpack5</h1>
-feflow-devkit-webpack4 为feflow套件 支持编译指定React，Vue项目模板 通过配置套件配置可以定制化项目编译参数
+feflow-devkit-webpack5 为feflow套件 支持编译指定React，Vue项目模板 通过配置套件配置可以定制化项目编译参数
 
 
 
 ## 特性
 
-- 使用webpack4 + babel7 最新的构建解决方案
+- 使用webpack5 + babel7 最新的构建解决方案
 
 - 支持React，Vue的编译运行
 
