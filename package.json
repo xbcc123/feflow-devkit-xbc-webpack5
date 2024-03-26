@@ -1,6 +1,6 @@
 {
   "name": "feflow-devkit-xbc-webpack5",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "webpack5编译套件",
   "main": "index.js",
   "scripts": {
@@ -130,6 +130,7 @@
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.6.11",
     "webpack-bundle-analyzer": "^3.6.1",
+    "webpack": "^5.91.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-middleware": "^3.7.2",
     "webpack-dev-server": "^3.11.0",
