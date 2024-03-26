@@ -24,18 +24,18 @@ module.exports = {
 		type: 'filesystem',
 	},
 	externals: {
-		react: "React",
-		"react-dom": "ReactDOM",
-		antd: "antd",
-		"element-ui": "ELEMENT",
-		vue: "Vue",
-		vuex: "Vuex",
-		"vue-router": "VueRouter",
-		jquery: "$",
-		moment: "moment",
-		"mint-ui": "MINT",
-		"crypto-js": "CryptoJS",
-		lodash: "_"
+		// react: "React",
+		// "react-dom": "ReactDOM",
+		// antd: "antd",
+		// "element-ui": "ELEMENT",
+		// vue: "Vue",
+		// vuex: "Vuex",
+		// "vue-router": "VueRouter",
+		// jquery: "$",
+		// moment: "moment",
+		// "mint-ui": "MINT",
+		// "crypto-js": "CryptoJS",
+		// lodash: "_"
 	},
 	resolveLoader: {
 		// modules: ["node_modules"]

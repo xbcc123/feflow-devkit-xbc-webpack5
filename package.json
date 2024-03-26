@@ -1,6 +1,6 @@
 {
   "name": "feflow-devkit-xbc-webpack5",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "webpack5编译套件",
   "main": "index.js",
   "scripts": {

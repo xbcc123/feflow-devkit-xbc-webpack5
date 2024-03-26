@@ -9,6 +9,7 @@ const projectRoot = process.cwd()
 
 const devConfig = {
 	mode: "development",
+	target: "web",
 	module: {
 		rules: [
 		]
@@ -31,11 +32,12 @@ const devConfig = {
 		noInfo: true,
 		open: true,
 		overlay: false,
-		watchOptions: {
-			ignored: /node_modules/,
-			aggregateTimeout: 100,
-			poll: 1000
-		}
+	},
+	watch: true,
+	watchOptions: {
+		ignored: /node_modules/,
+		aggregateTimeout: 100,
+		poll: 1000
 	},
 	devtool: "eval-cheap-source-map"
 }
