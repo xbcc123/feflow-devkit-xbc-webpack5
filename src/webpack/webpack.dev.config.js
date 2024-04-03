@@ -11,8 +11,7 @@ const devConfig = {
 	mode: "development",
 	target: "web",
 	module: {
-		rules: [
-		]
+		rules: []
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
