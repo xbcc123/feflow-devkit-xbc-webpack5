@@ -1,9 +1,9 @@
 const webpack = require("webpack")
-const ora = require("ora")
+// const ora = require("ora")
 const chalk = require("chalk")
 const currentConfig = require("./webpack/webpack.prod.config")
-const SpeedMeasurePlugin = require("speed-measure-webpack-plugin")
-const smp = new SpeedMeasurePlugin()
+// const SpeedMeasurePlugin = require("speed-measure-webpack-plugin")
+// const smp = new SpeedMeasurePlugin()
 
 const merge = require("webpack-merge")
 let config = {},
@@ -64,7 +64,7 @@ export function run(ctx, options) {
 				chunks: false,
 				chunkModules: false,
 				builtAt: true, // 添加构建日期和构建时间信息
-				cached: true // 添加缓存（但未构建）模块的信息
+				cached: true, // 添加缓存（但未构建）模块的信息
 				// cachedAssets: true,  // 显示缓存的资源（将其设置为 `false` 则仅显示输出的文件）
 			}) + "\n\n"
 		)

@@ -3,7 +3,7 @@ const currentConfig = require("./webpack/webpack.dev.config")
 const merge = require("webpack-merge")
 const WebpackDevServer = require("webpack-dev-server")
 const os = require("os")
-const chalk = require("chalk")
+// const chalk = require("chalk")
 
 // 获取本地ip地址
 function getIPAdress() {
@@ -60,15 +60,15 @@ function getConfig(options, env) {
 	return options.devkit.commands[env].options
 }
 
-module.exports = ctx => {
+module.exports = (ctx) => {
 	importConfig = getConfig(ctx.projectConfig, "dev")
 	config = merge(currentConfig, build.createDevConfig(importConfig))
 	const compiler = webpack(config)
 	const devServerOptions = Object.assign({}, config.devServer, {
 		open: true,
 		stats: {
-			colors: true
-		}
+			colors: true,
+		},
 	})
 	const server = new WebpackDevServer(compiler, devServerOptions)
 	server.listen(devServerOptions.port, myHost, () => {

@@ -1,8 +1,8 @@
 import { run } from "./build.js"
 
-module.exports = ctx => {
+module.exports = (ctx) => {
 	let runParams = {
-		env: "demo"
+		env: "demo",
 	}
 	run(ctx, runParams)
 }

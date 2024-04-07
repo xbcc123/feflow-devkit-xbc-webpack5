@@ -2,9 +2,8 @@ const path = require("path")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 const CopyWebpackPlugin = require("copy-webpack-plugin")
 const VueLoaderPlugin = require("vue-loader/lib/plugin")
-const ProgressBarPlugin = require('progress-bar-webpack-plugin');
-const colors = require("colors");
-
+const ProgressBarPlugin = require("progress-bar-webpack-plugin")
+const colors = require("colors")
 
 const projectRoot = process.cwd()
 
@@ -18,10 +17,10 @@ module.exports = {
 		filename: "static/js/[name].[hash].bundle.js",
 		chunkFilename: "static/js/[name].[chunkhash].bundle.js",
 		pathinfo: false,
-		publicPath: "/"
+		publicPath: "/",
 	},
 	cache: {
-		type: 'filesystem',
+		type: "filesystem",
 	},
 	externals: {
 		// react: "React",
@@ -41,8 +40,8 @@ module.exports = {
 		// modules: ["node_modules"]
 		modules: [
 			path.resolve(__dirname, "../../node_modules"),
-			path.join(projectRoot, "node_modules")
-		]
+			path.join(projectRoot, "node_modules"),
+		],
 	},
 
 	resolve: {
@@ -50,14 +49,14 @@ module.exports = {
 		alias: {
 			vue$: "vue/dist/vue.esm.js",
 			app: path.join(projectRoot, "./src/app.js"),
-			"@": path.join(projectRoot, "./src")
+			"@": path.join(projectRoot, "./src"),
 		},
 		mainFiles: ["index"],
 		// modules: ["node_modules"],
 		modules: [
 			path.resolve(__dirname, "../../node_modules"),
-			path.join(projectRoot, "node_modules")
-		]
+			path.join(projectRoot, "node_modules"),
+		],
 	},
 
 	module: {
@@ -66,53 +65,53 @@ module.exports = {
 				test: /\.vue$/,
 				use: [
 					{
-						loader: "thread-loader"
+						loader: "thread-loader",
 					},
 					{
-						loader: "cache-loader"
+						loader: "cache-loader",
 					},
 					{
-						loader: "vue-loader"
-					}
-				]
+						loader: "vue-loader",
+					},
+				],
 			},
 			{
 				test: /\.js$/,
 				exclude: [
 					path.join(projectRoot, "node_modules"),
-					path.resolve(__dirname, "../../node_modules")
+					path.resolve(__dirname, "../../node_modules"),
 				],
 				use: [
 					{
-						loader: "thread-loader"
+						loader: "thread-loader",
 					},
 					{
 						loader: "babel-loader",
 						options: {
 							cacheDirectory: true,
-							compact: false
-						}
-					}
-				]
+							compact: false,
+						},
+					},
+				],
 			},
 			{
 				test: /\.(j|t)sx?$/,
 				use: [
 					{
-						loader: "thread-loader"
+						loader: "thread-loader",
 					},
 					{
 						loader: "babel-loader",
 						options: {
 							cacheDirectory: true,
-							compact: false
-						}
-					}
+							compact: false,
+						},
+					},
 				],
 				exclude: [
 					path.join(projectRoot, "node_modules"),
-					path.resolve(__dirname, "../../node_modules")
-				]
+					path.resolve(__dirname, "../../node_modules"),
+				],
 			},
 			{
 				test: /\.(png|svg|jpg|gif)$/,
@@ -122,10 +121,10 @@ module.exports = {
 						options: {
 							limit: 8192,
 							esModule: false, // 这里设置为false
-							name: "static/img/[name].[hash:7].[ext]"
-						}
-					}
-				]
+							name: "static/img/[name].[hash:7].[ext]",
+						},
+					},
+				],
 			},
 			{
 				test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
@@ -135,10 +134,10 @@ module.exports = {
 						options: {
 							limit: 8192,
 							esModule: false, // 这里设置为false
-							name: "static/fonts/[name].[hash:7].[ext]"
-						}
-					}
-				]
+							name: "static/fonts/[name].[hash:7].[ext]",
+						},
+					},
+				],
 			},
 			{
 				test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
@@ -148,12 +147,12 @@ module.exports = {
 						options: {
 							limit: 8192,
 							esModule: false, // 这里设置为false
-							name: "static/media/[name].[hash:7].[ext]"
-						}
-					}
-				]
-			}
-		]
+							name: "static/media/[name].[hash:7].[ext]",
+						},
+					},
+				],
+			},
+		],
 	},
 
 	plugins: [
@@ -163,13 +162,15 @@ module.exports = {
 			{
 				from: path.join(projectRoot, "./static"),
 				to: "static",
-				ignore: [".*"]
-			}
+				ignore: [".*"],
+			},
 		]),
 		new ProgressBarPlugin({
 			format:
-				"run [:bar] " + colors.green.bold(":percent") + " (:elapsed seconds)",
-			clear: true
+				"run [:bar] " +
+				colors.green.bold(":percent") +
+				" (:elapsed seconds)",
+			clear: true,
 		}),
-	]
+	],
 }

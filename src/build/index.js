@@ -1,16 +1,13 @@
 import path from "path"
-import glob from "glob"
 import webpack from "webpack"
 import fs from "fs"
 import MiniCssExtractPlugin from "mini-css-extract-plugin"
 import HtmlWebpackExternalsPlugin from "html-webpack-externals-plugin"
 import OptimizeCssAssetsPlugin from "optimize-css-assets-webpack-plugin"
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
-	.BundleAnalyzerPlugin
+const BundleAnalyzerPlugin =
+	require("webpack-bundle-analyzer").BundleAnalyzerPlugin
 
-import {
-	deepCopy
-} from "../tools/index.js"
+import { deepCopy } from "../tools/index.js"
 
 const webpackMerge = require("webpack-merge")
 
@@ -36,7 +33,7 @@ if (!projectRoot) {
 
 const baseConfig = {
 	module: {},
-	resolve: {}
+	resolve: {},
 }
 
 class Builder {
@@ -70,7 +67,7 @@ class Builder {
 		devConfig.plugins = devPlugins
 
 		// 设置启动服务端口号 本地服务配置
-		devConfig.devServer = this.setDevServer(options.port || 1234)
+		devConfig.devServer = this.setDevServer(options.devServer)
 		return webpackMerge(this.mixCreateConfig(options), devConfig)
 	}
 
@@ -148,7 +145,7 @@ class Builder {
 		// console.log(analyzer)
 		if (!analyzer || JSON.stringify(analyzer) === "{}") {
 			analyzer = {
-				analyzerPort: "4321"
+				analyzerPort: "4321",
 			}
 		}
 		return new BundleAnalyzerPlugin(analyzer)
@@ -185,13 +182,13 @@ class Builder {
 									mode: "local",
 									exportGlobals: true,
 									localIdentName:
-										"[path][name]__[local]--[hash:base64:5]"
+										"[path][name]__[local]--[hash:base64:5]",
 							  }
-							: false
-					}
+							: false,
+					},
 				},
-				"postcss-loader"
-			]
+				"postcss-loader",
+			],
 		}
 	}
 
@@ -208,21 +205,21 @@ class Builder {
 									mode: "local",
 									exportGlobals: true,
 									localIdentName:
-										"[path][name]__[local]--[hash:base64:5]"
+										"[path][name]__[local]--[hash:base64:5]",
 							  }
-							: false
-					}
+							: false,
+					},
 				},
 				"postcss-loader",
 				{
 					loader: "less-loader",
 					options: {
 						lessOptions: {
-							javascriptEnabled: true
-						}
-					}
-				}
-			]
+							javascriptEnabled: true,
+						},
+					},
+				},
+			],
 		}
 	}
 
@@ -239,14 +236,14 @@ class Builder {
 									mode: "local",
 									exportGlobals: true,
 									localIdentName:
-										"[path][name]__[local]--[hash:base64:5]"
+										"[path][name]__[local]--[hash:base64:5]",
 							  }
-							: false
-					}
+							: false,
+					},
 				},
 				"postcss-loader",
-				"sass-loader"
-			]
+				"sass-loader",
+			],
 		}
 	}
 
@@ -263,40 +260,42 @@ class Builder {
 									mode: "local",
 									exportGlobals: true,
 									localIdentName:
-										"[path][name]__[local]--[hash:base64:5]"
+										"[path][name]__[local]--[hash:base64:5]",
 							  }
-							: false
-					}
+							: false,
+					},
 				},
 				"postcss-loader",
-				"stylus-loader"
-			]
+				"stylus-loader",
+			],
 		}
 	}
 
 	setMiniCssExtractPlugin() {
 		return new MiniCssExtractPlugin({
-			filename: "static/css/[name].[contenthash].css"
+			filename: "static/css/[name].[contenthash].css",
 		})
 	}
 
 	setOptimizeCssAssetsPlugin() {
 		return new OptimizeCssAssetsPlugin({
 			assetNameRegExp: /\.css$/g,
-			cssProcessor: require("cssnano")
+			cssProcessor: require("cssnano"),
 		})
 	}
 
-	setDevServer(port) {
-		return {
-			port: port
-		}
+	setDevServer(devServer) {
+		return (
+			devServer || {
+				port: 1234,
+			}
+		)
 	}
 
 	setDefinePlugin(envs, currentEnv) {
 		// console.log(envs[currentEnv].envObj);
 		return new webpack.DefinePlugin({
-			"process.env": envs[currentEnv].envObj
+			"process.env": envs[currentEnv].envObj,
 		})
 	}
 }

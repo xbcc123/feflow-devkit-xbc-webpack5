@@ -10,14 +10,13 @@ const prodConfig = {
 	mode: "production",
 	devtool: false,
 	module: {
-		rules: [
-		]
+		rules: [],
 	},
 	plugins: [
 		new webpack.ids.HashedModuleIdsPlugin({
 			hashFunction: "sha256",
 			hashDigest: "hex",
-			hashDigestLength: 20
+			hashDigestLength: 20,
 		}),
 		// 压缩html
 		new HtmlWebpackPlugin({
@@ -30,9 +29,9 @@ const prodConfig = {
 				preserveLineBreaks: false,
 				minifyCSS: true,
 				minifyJS: true,
-				removeComments: false
-			}
-		})
+				removeComments: false,
+			},
+		}),
 	],
 	optimization: {
 		splitChunks: {
@@ -53,23 +52,23 @@ const prodConfig = {
 					parse: {},
 					compress: {
 						drop_console: true,
-						pure_funcs: ["console.log"] // 统一删除console.log
+						pure_funcs: ["console.log"], // 统一删除console.log
 					},
 					mangle: true,
 					module: false,
 					output: {
-						comments: false
+						comments: false,
 					},
 					toplevel: false,
 					nameCache: null,
 					ie8: false,
 					keep_classnames: undefined,
 					keep_fnames: false,
-					safari10: false
-				}
-			})
-		]
-	}
+					safari10: false,
+				},
+			}),
+		],
+	},
 }
 
 module.exports = merge(baseConfig, prodConfig)

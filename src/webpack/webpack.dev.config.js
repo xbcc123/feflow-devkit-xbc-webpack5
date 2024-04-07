@@ -11,15 +11,15 @@ const devConfig = {
 	mode: "development",
 	target: "web",
 	module: {
-		rules: []
+		rules: [],
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
 			filename: "index.html",
-			template: path.join(projectRoot, "index.html")
+			template: path.join(projectRoot, "index.html"),
 		}),
 		new webpack.HotModuleReplacementPlugin(),
-		new FriendlyErrorsWebpackPlugin()
+		new FriendlyErrorsWebpackPlugin(),
 	],
 	devServer: {
 		contentBase: [path.join(projectRoot, "./dist")],
@@ -36,9 +36,9 @@ const devConfig = {
 	watchOptions: {
 		ignored: /node_modules/,
 		aggregateTimeout: 100,
-		poll: 1000
+		poll: 1000,
 	},
-	devtool: "eval-cheap-source-map"
+	devtool: "eval-cheap-source-map",
 }
 
 module.exports = merge(baseConfig, devConfig)
