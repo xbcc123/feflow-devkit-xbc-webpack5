@@ -2,6 +2,7 @@ const webpack = require("webpack")
 const currentConfig = require("./webpack/webpack.dev.config")
 const merge = require("webpack-merge")
 const WebpackDevServer = require("webpack-dev-server")
+// const chalk = require("chalk")
 
 let config = {},
 	importConfig = {}
@@ -54,10 +55,10 @@ module.exports = (ctx) => {
 	})
 	const server = new WebpackDevServer(compiler, devServerOptions)
 	server.listen(devServerOptions.port, myHost, () => {
-		console.log(
-			chalk.cyan(
-				`ctrl+鼠标左键点开这个链接愉快的玩耍吧:http://${myHost}:${devServerOptions.port}`
-			)
-		)
+		// console.log(
+		// 	chalk.cyan(
+		// 		`ctrl+鼠标左键点开这个链接愉快的玩耍吧:http://${myHost}:${devServerOptions.port}`
+		// 	)
+		// )
 	})
 }
