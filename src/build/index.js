@@ -1,15 +1,13 @@
 import path from "path"
-import webpack from "webpack"
+import { rspack } from "@rspack/core"
+import { merge as webpackMerge } from "@rspack/merge"
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
+import { deepCopy } from "../tools/index.js"
+
 import fs from "fs"
 import MiniCssExtractPlugin from "mini-css-extract-plugin"
 import HtmlWebpackExternalsPlugin from "html-webpack-externals-plugin"
 import OptimizeCssAssetsPlugin from "optimize-css-assets-webpack-plugin"
-const BundleAnalyzerPlugin =
-	require("webpack-bundle-analyzer").BundleAnalyzerPlugin
-
-import { deepCopy } from "../tools/index.js"
-
-const webpackMerge = require("webpack-merge")
 
 function getPath(filename) {
 	let currDir = process.cwd()

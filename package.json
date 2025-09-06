@@ -4,6 +4,8 @@
   "description": "webpack5编译套件",
   "main": "index.js",
   "scripts": {
+	"build": "rspack build --config ./src/rspack/rspack.prod.config.js",
+    "dev": "rspack serve --config ./src/rspack/rspack.dev.config.js",
     "prepublish": "./node_modules/.bin/babel src --out-dir lib --presets=@babel/env",
     "build:test": "./node_modules/.bin/babel src --out-dir lib --presets=@babel/env",
     "eslint": "eslint ./src --fix",
@@ -35,6 +37,8 @@
   "author": "Shawn",
   "license": "ISC",
   "devDependencies": {
+    "@rspack/cli": "^1.5.2",
+    "@rspack/core": "^1.5.2",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.3",
@@ -77,8 +81,7 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-loader": "^3.0.3",
     "eslint-plugin-import": "2.18.2",
-    "express": "^4.17.1",
-    "file-loader": "^5.1.0",
+
     "friendly-errors-webpack-plugin": "^1.7.0",
     "glob": "^7.1.6",
     "glob-all": "^3.1.0",
@@ -129,8 +132,8 @@
     "vue-loader": "^15.9.0",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.6.11",
-    "webpack-bundle-analyzer": "^3.6.1",
     "webpack": "^5.91.0",
+    "webpack-bundle-analyzer": "^3.6.1",
     "webpack-cli": "^5.1.4",
     "webpack-dev-middleware": "^3.7.2",
     "webpack-dev-server": "^3.11.0",
