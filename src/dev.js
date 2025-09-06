@@ -2,27 +2,6 @@ const webpack = require("webpack")
 const currentConfig = require("./webpack/webpack.dev.config")
 const merge = require("webpack-merge")
 const WebpackDevServer = require("webpack-dev-server")
-const os = require("os")
-// const chalk = require("chalk")
-
-// 获取本地ip地址
-function getIPAdress() {
-	var interfaces = os.networkInterfaces()
-	for (var devName in interfaces) {
-		var iface = interfaces[devName]
-		for (var i = 0; i < iface.length; i++) {
-			var alias = iface[i]
-			if (
-				alias.family === "IPv4" &&
-				alias.address !== "127.0.0.1" &&
-				!alias.internal
-			) {
-				return alias.address
-			}
-		}
-	}
-}
-const myHost = getIPAdress()
 
 let config = {},
 	importConfig = {}
@@ -60,6 +39,8 @@ function getConfig(options, env) {
 	return options.devkit.commands[env].options
 }
 
+const myHost = "0.0.0.0"
+
 module.exports = (ctx) => {
 	importConfig = getConfig(ctx.projectConfig, "dev")
 	config = merge(currentConfig, build.createDevConfig(importConfig))
@@ -69,13 +50,14 @@ module.exports = (ctx) => {
 		stats: {
 			colors: true,
 		},
+		host: myHost, // 保证所有地址都能访问
 	})
 	const server = new WebpackDevServer(compiler, devServerOptions)
 	server.listen(devServerOptions.port, myHost, () => {
-		// console.log(
-		// 	chalk.cyan(
-		// 		`ctrl+鼠标左键点开这个链接愉快的玩耍吧:http://${myHost}:${devServerOptions.port}`
-		// 	)
-		// )
+		console.log(
+			chalk.cyan(
+				`ctrl+鼠标左键点开这个链接愉快的玩耍吧:http://${myHost}:${devServerOptions.port}`
+			)
+		)
 	})
 }
