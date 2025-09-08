@@ -1,13 +1,10 @@
-import path from "path"
-import { rspack } from "@rspack/core"
-import { merge as webpackMerge } from "@rspack/merge"
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
-import { deepCopy } from "../tools/index.js"
-
-import fs from "fs"
-import MiniCssExtractPlugin from "mini-css-extract-plugin"
-import HtmlWebpackExternalsPlugin from "html-webpack-externals-plugin"
-import OptimizeCssAssetsPlugin from "optimize-css-assets-webpack-plugin"
+import path from "path";
+import merge from "webpack-merge";
+import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
+import { deepCopy } from "../tools/index.js";
+import fs from "fs";
+// import OptimizeCssAssetsPlugin from "optimize-css-assets-webpack-plugin";
+import { rspack } from "@rspack/core";
 
 function getPath(filename) {
 	let currDir = process.cwd()
@@ -32,121 +29,93 @@ if (!projectRoot) {
 const baseConfig = {
 	module: {},
 	resolve: {},
-}
+};
 
 class Builder {
 	// 创建dev配置
 	createDevConfig(options) {
-		const devConfig = deepCopy(baseConfig)
-		devConfig.mode = "development"
+		const devConfig = deepCopy(baseConfig);
+		devConfig.mode = "development";
 		// 设置打包规则
-		const devRules = []
+		const devRules = [];
 
 		// 设置CSS解析规则  isMinicss是否开启css抽离  isModule是否开启css Modules
-		devRules.push(this.setCssRule(options.isModule, options.isMinicss))
-		// 设置less
-		devRules.push(this.setLessRule(options.isModule, options.isMinicss))
-		// 设置scss
-		devRules.push(this.setSassRule(options.isModule, options.isMinicss))
-		// 设置stylus
-		devRules.push(this.setStylusRule(options.isModule, options.isMinicss))
+		devRules.push(this.setCssRule(options.isModule, options.isMinicss));
+		devRules.push(this.setLessRule(options.isModule, options.isMinicss));
+		devRules.push(this.setSassRule(options.isModule, options.isMinicss));
+		devRules.push(this.setStylusRule(options.isModule, options.isMinicss));
 
 		// 设置打包插件
-		let devPlugins = []
-		// devPlugins.push(new StringReplaceWebpackPlugin());
-
+		let devPlugins = [];
 		// 设置提取CSS为一个单独的文件的插件
 		if (options.isMinicss) {
-			devPlugins.push(this.setMiniCssExtractPlugin())
-			devPlugins.push(this.setOptimizeCssAssetsPlugin())
+			devPlugins.push(this.setMiniCssExtractPlugin());
+			// devPlugins.push(this.setOptimizeCssAssetsPlugin());
 		}
 
-		devConfig.module.rules = devRules
-		devConfig.plugins = devPlugins
+		devConfig.module.rules = devRules;
+		devConfig.plugins = devPlugins;
 
 		// 设置启动服务端口号 本地服务配置
-		devConfig.devServer = this.setDevServer(options.devServer)
-		return webpackMerge(this.mixCreateConfig(options), devConfig)
+		devConfig.devServer = this.setDevServer(options.devServer);
+		return merge(this.mixCreateConfig(options), devConfig);
 	}
 
 	// 创建prod配置
 	createProdConfig(options) {
-		const prodConfig = deepCopy(baseConfig)
+		const prodConfig = deepCopy(baseConfig);
+		prodConfig.mode = "production";
 		// 设置打包规则
-		const prodRules = []
-		// 设置CSS解析规则  isMinicss是否开启css抽离  isModule是否开启css Modules
-		prodRules.push(this.setCssRule(options.isModule, options.isMinicss))
-		// 设置less
-		prodRules.push(this.setLessRule(options.isModule, options.isMinicss))
-		// 设置scss
-		prodRules.push(this.setSassRule(options.isModule, options.isMinicss))
-		// 设置stylus
-		prodRules.push(this.setStylusRule(options.isModule, options.isMinicss))
-		// 设置打包插件
-		let prodPlugins = []
-		// 设置提取CSS为一个单独的文件的插件
+		const prodRules = [];
+		prodRules.push(this.setCssRule(options.isModule, options.isMinicss));
+		prodRules.push(this.setLessRule(options.isModule, options.isMinicss));
+		prodRules.push(this.setSassRule(options.isModule, options.isMinicss));
+		prodRules.push(this.setStylusRule(options.isModule, options.isMinicss));
+		let prodPlugins = [];
 		if (options.isMinicss) {
-			prodPlugins.push(this.setMiniCssExtractPlugin())
-			prodPlugins.push(this.setOptimizeCssAssetsPlugin())
+			prodPlugins.push(this.setMiniCssExtractPlugin());
+			// prodPlugins.push(this.setOptimizeCssAssetsPlugin());
 		}
-
-		prodConfig.module.rules = prodRules
-		prodConfig.plugins = prodPlugins
-
-		return webpackMerge(this.mixCreateConfig(options), prodConfig)
+		prodConfig.module.rules = prodRules;
+		prodConfig.plugins = prodPlugins;
+		return merge(this.mixCreateConfig(options), prodConfig);
 	}
 
 	// 公用配置
 	mixCreateConfig(options) {
-		const mixConfig = deepCopy(baseConfig)
-
-		// 设置打包规则
-		let minRules = []
-
-		// 设置打包插件
-		let mixPlugins = []
-
-		// 环境变量配置
-		mixPlugins.push(this.setDefinePlugin(options.envs, options.currentEnv))
-
-		// externals配置
-		if (options.externals && options.externals.length > 0) {
-			mixPlugins.push(this.setExternalPlugin(options.externals))
-		}
-
+		const mixConfig = deepCopy(baseConfig);
+		let minRules = [];
+		let mixPlugins = [];
+		mixPlugins.push(this.setDefinePlugin(options.envs, options.currentEnv));
 		// 是否启动打包性能分析
 		if (options.hasAnalyzer) {
-			mixPlugins.push(this.setBundleSnalyzerPlugin(options.analyzer))
+			mixPlugins.push(this.setBundleSnalyzerPlugin(options.analyzer));
 		}
-
-		mixConfig.entry = this.setEntry(options.entry)
-		mixConfig.resolve.alias = this.setAlias(options.alias)
-		// mixConfig.resolve.extensions = []
-
-		mixConfig.module.rules = minRules
-		mixConfig.plugins = mixPlugins
-		return mixConfig
+		mixConfig.entry = this.setEntry(options.entry);
+		mixConfig.resolve.alias = this.setAlias(options.alias);
+		mixConfig.module.rules = minRules;
+		mixConfig.plugins = mixPlugins;
+		return mixConfig;
 	}
 
 	/**
 	 * externals 配置
 	 * @private
 	 */
+	// Rspack 暂无官方 externals 插件，建议直接在 config.externals 配置
 	setExternalPlugin(externals) {
-		const newExternals = externals
-		//   console.log(newExternals)
-		return new HtmlWebpackExternalsPlugin({ externals: newExternals })
+		// 这里保留方法结构，实际 externals 建议直接在 config.externals 配置
+		return null;
 	}
 
 	// 设置打包优化
 	setBundleSnalyzerPlugin(analyzer) {
-		// console.log(analyzer)
 		if (!analyzer || JSON.stringify(analyzer) === "{}") {
 			analyzer = {
 				analyzerPort: "4321",
-			}
+			};
 		}
-		return new BundleAnalyzerPlugin(analyzer)
+		return new BundleAnalyzerPlugin(analyzer);
 	}
 
 	// 设置别名
@@ -171,7 +140,7 @@ class Builder {
 		return {
 			test: /\.css$/,
 			use: [
-				isMinicss ? MiniCssExtractPlugin.loader : "style-loader",
+				isMinicss ? rspack.CssExtractRspackPlugin.loader : "style-loader",
 				{
 					loader: "css-loader",
 					options: {
@@ -194,7 +163,7 @@ class Builder {
 		return {
 			test: /\.less$/,
 			use: [
-				isMinicss ? MiniCssExtractPlugin.loader : "style-loader",
+				isMinicss ? rspack.CssExtractRspackPlugin.loader : "style-loader",
 				{
 					loader: "css-loader",
 					options: {
@@ -225,7 +194,7 @@ class Builder {
 		return {
 			test: /\.scss$/,
 			use: [
-				isMinicss ? MiniCssExtractPlugin.loader : "style-loader",
+				isMinicss ? rspack.CssExtractRspackPlugin.loader : "style-loader",
 				{
 					loader: "css-loader",
 					options: {
@@ -249,7 +218,7 @@ class Builder {
 		return {
 			test: /\.sty(l|lus)$/,
 			use: [
-				isMinicss ? MiniCssExtractPlugin.loader : "style-loader",
+				isMinicss ? rspack.CssExtractRspackPlugin.loader : "style-loader",
 				{
 					loader: "css-loader",
 					options: {
@@ -270,17 +239,17 @@ class Builder {
 	}
 
 	setMiniCssExtractPlugin() {
-		return new MiniCssExtractPlugin({
+		return new rspack.CssExtractRspackPlugin({
 			filename: "static/css/[name].[contenthash].css",
 		})
 	}
 
-	setOptimizeCssAssetsPlugin() {
-		return new OptimizeCssAssetsPlugin({
-			assetNameRegExp: /\.css$/g,
-			cssProcessor: require("cssnano"),
-		})
-	}
+	// setOptimizeCssAssetsPlugin() {
+	// 	return new OptimizeCssAssetsPlugin({
+	// 		assetNameRegExp: /\.css$/g,
+	// 		cssProcessor: require("cssnano"),
+	// 	})
+	// }
 
 	setDevServer(devServer) {
 		return (
@@ -291,10 +260,9 @@ class Builder {
 	}
 
 	setDefinePlugin(envs, currentEnv) {
-		// console.log(envs[currentEnv].envObj);
-		return new webpack.DefinePlugin({
+		return new rspack.DefinePlugin({
 			"process.env": envs[currentEnv].envObj,
-		})
+		});
 	}
 }
 

@@ -1,6 +1,6 @@
 const path = require("path");
-const { merge } = require("webpack-merge");
-const HtmlRspackPlugin = require("@rspack/plugin-html");
+const merge = require("webpack-merge")
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const baseConfig = require("./rspack.base.config");
 
 const projectRoot = process.cwd();
@@ -9,7 +9,7 @@ const prodConfig = {
   mode: "production",
   devtool: false,
   plugins: [
-    new HtmlRspackPlugin({
+    new HtmlWebpackPlugin({
       filename: "index.html",
       template: path.join(projectRoot, "index.html"),
       inject: true,

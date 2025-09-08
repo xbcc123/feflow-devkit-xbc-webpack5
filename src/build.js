@@ -1,17 +1,11 @@
-const webpack = require("webpack")
-// const ora = require("ora")
-const chalk = require("chalk")
-const currentConfig = require("./webpack/webpack.prod.config")
-// const SpeedMeasurePlugin = require("speed-measure-webpack-plugin")
-// const smp = new SpeedMeasurePlugin()
-
-const merge = require("webpack-merge")
-let config = {},
-	importConfig = {}
-
-import Builder from "./build/index.js"
-import { deepCloneUnique } from "./tools/index.js"
-let build = new Builder()
+const { rspack } = require("@rspack/core");
+const chalk = require("chalk");
+const currentConfig = require("./rspack/rspack.prod.config");
+const merge = require("webpack-merge");
+let config = {}, importConfig = {};
+import Builder from "./build/index.js";
+import { deepCloneUnique } from "./tools/index.js";
+let build = new Builder();
 
 // 将公共配置绑定到各个环境
 function setSingleConfig(options) {
@@ -44,35 +38,30 @@ function getConfig(options, env) {
  *
  * @example
  */
+
 export function run(ctx, options) {
-	importConfig = getConfig(ctx.projectConfig, options.env)
-	config = merge(currentConfig, build.createProdConfig(importConfig))
-	// config = smp.wrap(config) // 打包会使external失效
-	// const spinner = ora(chalk.yellow("项目正在打包 请稍候..."))  // 使用ProgressBarPlugin替换
-	// spinner.start()
-	webpack(config, (err, stats) => {
-		// spinner.stop()
-		if (err) throw err
+	importConfig = getConfig(ctx.projectConfig, options.env);
+	config = merge(currentConfig, build.createProdConfig(importConfig));
+	rspack(config, (err, stats) => {
+		if (err) throw err;
 		process.stdout.write(
 			stats.toString({
 				publicPath: true,
 				entrypoints: true,
 				colors: true,
-				assets: false, // 隐藏打包资源名称
+				assets: false,
 				modules: false,
-				children: false, // If you are using ts-loader, setting this to true will make TypeScript errors show up during build.
+				children: false,
 				chunks: false,
 				chunkModules: false,
-				builtAt: true, // 添加构建日期和构建时间信息
-				cached: true, // 添加缓存（但未构建）模块的信息
-				// cachedAssets: true,  // 显示缓存的资源（将其设置为 `false` 则仅显示输出的文件）
+				builtAt: true,
+				cached: true,
 			}) + "\n\n"
-		)
-
+		);
 		if (stats.hasErrors()) {
-			console.log(chalk.red("  Build failed with errors.\n"))
-			process.exit(1)
+			console.log(chalk.red("  Build failed with errors.\n"));
+			process.exit(1);
 		}
-		console.log(chalk.cyan("  Build complete.\n"))
-	})
+		console.log(chalk.cyan("  Build complete.\n"));
+	});
 }
