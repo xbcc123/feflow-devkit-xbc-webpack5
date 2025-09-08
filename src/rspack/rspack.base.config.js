@@ -1,19 +1,23 @@
 const path = require("path");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
-const VueLoaderPlugin = require("vue-loader/lib/plugin");
+const CopyRspackPlugin = require("@rspack/plugin-copy");
+const VueLoaderPlugin = require("@rspack/plugin-vue");
 const ProgressBarPlugin = require("progress-bar-webpack-plugin");
-const colors = require("colors");
 
 const projectRoot = process.cwd();
 
+/**
+ * Rspack 配置
+ * 文档: https://www.rspack.dev/zh/config/
+ */
 module.exports = {
   context: path.join(projectRoot, "./"),
   entry: path.join(projectRoot, "./src/index.js"),
   output: {
     path: path.join(projectRoot, "dist"),
-    filename: "static/js/[name].[hash].bundle.js",
-    chunkFilename: "static/js/[name].[chunkhash].bundle.js",
+    filename: "static/js/[name].[contenthash].bundle.js",
+    chunkFilename: "static/js/[name].[contenthash].bundle.js",
     publicPath: "/",
+    clean: true,
   },
   cache: {
     type: "filesystem",
@@ -35,10 +39,19 @@ module.exports = {
   module: {
     rules: [
       // 这里可根据需要添加 loader 配置
+      {
+        test: /\.vue$/,
+        use: [
+          {
+            loader: require.resolve("@rspack/plugin-vue/loader")
+          }
+        ]
+      },
+      // 其他 loader 配置
     ],
   },
   plugins: [
-    new CopyWebpackPlugin({
+    new CopyRspackPlugin({
       patterns: [
         // 这里可根据需要添加拷贝规则
       ],

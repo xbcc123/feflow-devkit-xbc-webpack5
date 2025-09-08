@@ -1,64 +1,45 @@
-const webpack = require("webpack")
-const currentConfig = require("./webpack/webpack.dev.config")
-const merge = require("webpack-merge")
-const WebpackDevServer = require("webpack-dev-server")
-// const chalk = require("chalk")
 
-let config = {},
-	importConfig = {}
+const { rspack } = require("@rspack/core");
+const RspackDevServer = require("@rspack/dev-server");
+const merge = require("webpack-merge");
 
-import Builder from "./build/index.js"
-import { deepCloneUnique } from "./tools/index.js"
+let config = {}, importConfig = {};
 
-let build = new Builder()
+import Builder from "./build/index.js";
+import { deepCloneUnique } from "./tools/index.js";
+
+let build = new Builder();
 
 function setSingleConfig(options) {
 	for (let key in options.devkit.commands) {
-		// 单独配置的选项会覆盖公共配置
-		// let single = Object.assign(
-		// 	options.devkit.commons,
-		// 	options.devkit.commands[key].options
-		// )
 		let single = merge(
 			options.devkit.commons,
 			options.devkit.commands[key].options
-		)
-		single = deepCloneUnique(single, "optionsId")
-		// 设置当前当前执行的环境变量
-		single.currentEnv = key
-		Object.assign(options.devkit.commands[key].options, single)
+		);
+		single = deepCloneUnique(single, "optionsId");
+		single.currentEnv = key;
+		Object.assign(options.devkit.commands[key].options, single);
 	}
-	return options
+	return options;
 }
 
-// 获取配置的config
 function getConfig(options, env) {
-	// 将公共配置绑定到各个环境
-	options = setSingleConfig(options)
-	// console.log(options.devkit.commands)
-	// console.log(options.devkit.commands['test'].options)
-	return options.devkit.commands[env].options
+	options = setSingleConfig(options);
+	return options.devkit.commands[env].options;
 }
 
-const myHost = "0.0.0.0"
+const myHost = "0.0.0.0";
 
-module.exports = (ctx) => {
-	importConfig = getConfig(ctx.projectConfig, "dev")
-	config = merge(currentConfig, build.createDevConfig(importConfig))
-	const compiler = webpack(config)
+module.exports = async (ctx) => {
+	importConfig = getConfig(ctx.projectConfig, "dev");
+	// 这里建议你将 currentConfig 替换为 rspack 的 dev 配置
+	const currentConfig = require("./rspack/rspack.dev.config");
+	config = merge(currentConfig, build.createDevConfig(importConfig));
+	const compiler = rspack(config);
 	const devServerOptions = Object.assign({}, config.devServer, {
 		open: true,
-		stats: {
-			colors: true,
-		},
-		host: myHost, // 保证所有地址都能访问
-	})
-	const server = new WebpackDevServer(compiler, devServerOptions)
-	server.listen(devServerOptions.port, myHost, () => {
-		// console.log(
-		// 	chalk.cyan(
-		// 		`ctrl+鼠标左键点开这个链接愉快的玩耍吧:http://${myHost}:${devServerOptions.port}`
-		// 	)
-		// )
-	})
-}
+		host: myHost,
+	});
+	const server = new RspackDevServer(devServerOptions, compiler);
+	await server.start();
+};
