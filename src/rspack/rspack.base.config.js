@@ -36,26 +36,17 @@ module.exports = {
 	},
 	module: {
 		rules: [
-			// 这里可根据需要添加 loader 配置
-			{
-				test: /\.vue$/,
-				use: [
-					{
-						loader: require.resolve("vue-loader")
-					}
-				]
-			},
 			{
 					test: /\.vue$/,
 					use: [
-					{
-						loader: 'vue-loader',
-						options: {
-						experimentalInlineMatchResource: true,
+						{
+							loader: 'vue-loader',
+							options: {
+								experimentalInlineMatchResource: true,
+							},
 						},
-					},
 					],
-				},
+			},
 			{
 				test: /\.js$/,
 				exclude: [
@@ -67,19 +58,10 @@ module.exports = {
 						loader: "thread-loader",
 					},
 					{
-						loader: "builtin:swc-loader",
+						loader: "babel-loader",
 						options: {
-							jsc: {
-								parser: {
-									syntax: "ecmascript",
-									jsx: true,
-								},
-								transform: {
-									react: {
-										runtime: "automatic",
-									},
-								},
-							},
+							cacheDirectory: true,
+							compact: false,
 						},
 					},
 				],
@@ -91,19 +73,10 @@ module.exports = {
 						loader: "thread-loader",
 					},
 					{
-						loader: "builtin:swc-loader",
+						loader: "babel-loader",
 						options: {
-							jsc: {
-								parser: {
-									syntax: "ecmascript",
-									jsx: true,
-								},
-								transform: {
-									react: {
-										runtime: "automatic",
-									},
-								},
-							},
+							cacheDirectory: true,
+							compact: false,
 						},
 					},
 				],
