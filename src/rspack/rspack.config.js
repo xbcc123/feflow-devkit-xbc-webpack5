@@ -1,4 +1,5 @@
 import { rspack } from "@rspack/core";
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const path = require("path");
 const { VueLoaderPlugin } = require("vue-loader");
 const projectRoot = process.cwd();
@@ -30,26 +31,6 @@ module.exports = {
 				test: /\.vue$/,
 				loader: path.resolve(__dirname, "../../node_modules/vue-loader"),
 			},
-			// {
-			// 	test: /\.[jt]sx?$/,
-			// 	exclude: /node_modules/,
-			// 	use: {
-			// 		loader: path.resolve(__dirname, '../../node_modules/babel-loader/lib/index.js'),
-			// 		options: {
-			//       		cacheDirectory: true,       // 开启缓存（会在 node_modules/.cache/babel-loader/ 里存放缓存文件）
-			// 			cacheCompression: false,    // 禁用缓存压缩，加快读写
-			// 			presets: [
-			// 				[path.resolve(__dirname, '../../node_modules/@babel/preset-env'), { targets: "defaults" }],
-			// 				[path.resolve(__dirname, '../../node_modules/@babel/preset-typescript'), { allowDeclareFields: true }]
-			// 			],
-			// 			plugins: [
-			// 				[path.resolve(__dirname, '../../node_modules/@babel/plugin-proposal-decorators'), { legacy: true }],
-			// 				path.resolve(__dirname, '../../node_modules/@babel/plugin-proposal-class-properties'),
-			// 				path.resolve(__dirname, '../../node_modules/@babel/plugin-proposal-object-rest-spread')
-			// 			],
-			// 		},
-			// 	},
-			// },
 			{
 				test: /\.[jt]sx?$/,
 				exclude: /node_modules/,
@@ -71,16 +52,16 @@ module.exports = {
 				}
 			},
 			{
+				test: /\.(png|jpe?g|gif|svg|woff2?|eot|ttf|otf)$/i,
+				type: "asset/resource",
+			},
+			{
 				test: /\.css$/,
 				use: [
 					path.resolve(__dirname, '../../node_modules/vue-style-loader/index.js'),
 					// rspack.CssExtractRspackPlugin.loader,
 					{
 						loader: path.resolve(__dirname, '../../node_modules/css-loader'),
-						options: {
-							// esModule: false,
-							// modules: true,
-						},
 					},
 					{
 						loader: path.resolve(__dirname, '../../node_modules/postcss-loader'),
@@ -99,10 +80,6 @@ module.exports = {
 					// rspack.CssExtractRspackPlugin.loader,
 					{
 						loader: path.resolve(__dirname, '../../node_modules/css-loader'),
-						options: {
-							// esModule: false,
-							// modules: true,
-						},
 					},
 					{
 						loader: path.resolve(__dirname, '../../node_modules/postcss-loader'),
@@ -125,10 +102,6 @@ module.exports = {
 					// rspack.CssExtractRspackPlugin.loader,
 					{
 						loader: path.resolve(__dirname, '../../node_modules/css-loader'),
-						options: {
-							// esModule: false,
-							// modules: true,
-						},
 					},
 					{
 						loader: path.resolve(__dirname, '../../node_modules/postcss-loader'),
@@ -141,35 +114,45 @@ module.exports = {
 					path.resolve(__dirname, '../../node_modules/sass-loader')
 				],
 			},
-			// {
-			// 	test: /\.styl$/,
-			// 	use: [
-			// 		path.resolve(__dirname, '../../node_modules/vue-style-loader/index.js'),
-			// 		rspack.CssExtractRspackPlugin.loader,
-			// 		path.resolve(__dirname, '../../node_modules/css-loader'),
-			// 		{
-			// 			loader: path.resolve(__dirname, '../../node_modules/postcss-loader'),
-			// 			options: {
-			// 				postcssOptions: {
-			// 					plugins: require('autoprefixer'),
-			// 				},
-			// 			},
-			// 		},
-			// 		path.resolve(__dirname, '../../node_modules/stylus-loader')
-			// 	],
-			// },
 			{
-				test: /\.(png|jpe?g|gif|svg|woff2?|eot|ttf|otf)$/i,
-				type: "asset/resource",
+				test: /\.styl$/,
+				use: [
+					path.resolve(__dirname, '../../node_modules/vue-style-loader/index.js'),
+					// rspack.CssExtractRspackPlugin.loader,
+					{
+						loader: path.resolve(__dirname, '../../node_modules/css-loader'),
+					},
+					{
+						loader: path.resolve(__dirname, '../../node_modules/postcss-loader'),
+						options: {
+							postcssOptions: {
+								plugins: [require('autoprefixer')],
+							},
+						},
+					},
+					path.resolve(__dirname, '../../node_modules/stylus-loader')
+				],
 			},
 		],
 	},
 	plugins: [
 		new VueLoaderPlugin(),
+		new CleanWebpackPlugin(),
 		new rspack.HtmlRspackPlugin({
 			template: path.resolve(projectRoot, "index.html"),
 			filename: "index.html",
 			inject: true,
+		}),
+		new rspack.CopyRspackPlugin({
+			patterns: [
+				{
+					from: path.join(projectRoot, "static"),
+					to: "static",
+					globOptions: {
+						ignore: ["**/.*"],
+					},
+				},
+			],
 		}),
 		new rspack.DefinePlugin({
 			"process.env": {
@@ -185,15 +168,4 @@ module.exports = {
 			filename: "static/css/[name].[contenthash].css",
 		}),
 	],
-	// optimization: {
-	// 	splitChunks: {
-	// 		chunks: "all",
-	// 		minSize: 80 * 1024,
-	// 		maxSize: 200 * 1024,
-	// 		minChunks: 1,
-	// 		maxAsyncRequests: 6,
-	// 		maxInitialRequests: 4,
-	// 	},
-	// 	minimize: true,
-	// },
 };

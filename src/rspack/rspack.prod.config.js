@@ -1,6 +1,6 @@
 const path = require("path");
+const { rspack } = require("@rspack/core");
 const merge = require("webpack-merge")
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 const baseConfig = require("./rspack.base.config");
 
 const projectRoot = process.cwd();
@@ -9,18 +9,11 @@ const prodConfig = {
   mode: "production",
   devtool: false,
   plugins: [
-    new HtmlWebpackPlugin({
+    new rspack.HtmlRspackPlugin({
       filename: "index.html",
       template: path.join(projectRoot, "index.html"),
       inject: true,
-      minify: {
-        html5: true,
-        collapseWhitespace: true,
-        preserveLineBreaks: false,
-        minifyCSS: true,
-        minifyJS: true,
-        removeComments: false,
-      },
+      minify: true
     }),
   ],
   optimization: {
@@ -37,4 +30,4 @@ const prodConfig = {
   },
 };
 
-module.exports = merge(baseConfig, prodConfig);
+module.exports = merge.smart(baseConfig, prodConfig);

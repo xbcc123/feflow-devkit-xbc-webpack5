@@ -1,8 +1,8 @@
 
-const { merge } = require("webpack-merge");
+const merge = require("webpack-merge");
 const path = require("path");
-const HtmlRspackPlugin = require("@rspack/plugin-html");
 const baseConfig = require("./rspack.base.config");
+const { rspack } = require("@rspack/core");
 
 const projectRoot = process.cwd();
 
@@ -10,10 +10,11 @@ const devConfig = {
   mode: "development",
   target: "web",
   plugins: [
-    new HtmlRspackPlugin({
-      filename: "index.html",
-      template: path.join(projectRoot, "index.html"),
-    }),
+	new rspack.HtmlRspackPlugin({
+		template: path.resolve(projectRoot, "index.html"),
+		filename: "index.html",
+		inject: true,
+	}),
   ],
   devServer: {
     static: {
@@ -27,13 +28,7 @@ const devConfig = {
       logging: "warn",
     },
   },
-  watch: true,
-  watchOptions: {
-    ignored: /node_modules/,
-    aggregateTimeout: 100,
-    poll: 1000,
-  },
   devtool: "eval-cheap-source-map",
 };
 
-module.exports = merge(baseConfig, devConfig);
+module.exports = merge.smart(baseConfig, devConfig);

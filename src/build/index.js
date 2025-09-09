@@ -1,10 +1,9 @@
-import path from "path";
-import merge from "webpack-merge";
-import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
-import { deepCopy } from "../tools/index.js";
-import fs from "fs";
-// import OptimizeCssAssetsPlugin from "optimize-css-assets-webpack-plugin";
-import { rspack } from "@rspack/core";
+const path = require("path");
+const merge = require("webpack-merge");
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+const { deepCopy } = require("../tools/index.js");
+const fs = require("fs");
+const { rspack } = require("@rspack/core");
 
 function getPath(filename) {
 	let currDir = process.cwd()
@@ -50,7 +49,6 @@ class Builder {
 		// 设置提取CSS为一个单独的文件的插件
 		if (options.isMinicss) {
 			devPlugins.push(this.setMiniCssExtractPlugin());
-			// devPlugins.push(this.setOptimizeCssAssetsPlugin());
 		}
 
 		devConfig.module.rules = devRules;
@@ -74,7 +72,6 @@ class Builder {
 		let prodPlugins = [];
 		if (options.isMinicss) {
 			prodPlugins.push(this.setMiniCssExtractPlugin());
-			// prodPlugins.push(this.setOptimizeCssAssetsPlugin());
 		}
 		prodConfig.module.rules = prodRules;
 		prodConfig.plugins = prodPlugins;
@@ -140,49 +137,25 @@ class Builder {
 		return {
 			test: /\.css$/,
 			use: [
-				isMinicss ? rspack.CssExtractRspackPlugin.loader : "style-loader",
+				isMinicss ? rspack.CssExtractRspackPlugin.loader : path.resolve(__dirname, '../../node_modules/style-loader'),
 				{
-					loader: "css-loader",
+					loader: path.resolve(__dirname, '../../node_modules/css-loader'),
 					options: {
 						modules: isModule
 							? {
-									mode: "local",
-									exportGlobals: true,
-									localIdentName:
-										"[path][name]__[local]--[hash:base64:5]",
+								mode: "local",
+								exportGlobals: true,
+								localIdentName:
+									"[path][name]__[local]--[hash:base64:5]",
 							  }
 							: false,
 					},
 				},
-				"postcss-loader",
-			],
-		}
-	}
-
-	setLessRule(isModule, isMinicss) {
-		return {
-			test: /\.less$/,
-			use: [
-				isMinicss ? rspack.CssExtractRspackPlugin.loader : "style-loader",
 				{
-					loader: "css-loader",
+					loader: path.resolve(__dirname, '../../node_modules/postcss-loader'),
 					options: {
-						modules: isModule
-							? {
-									mode: "local",
-									exportGlobals: true,
-									localIdentName:
-										"[path][name]__[local]--[hash:base64:5]",
-							  }
-							: false,
-					},
-				},
-				"postcss-loader",
-				{
-					loader: "less-loader",
-					options: {
-						lessOptions: {
-							javascriptEnabled: true,
+						postcssOptions: {
+							plugins: [require('autoprefixer')],
 						},
 					},
 				},
@@ -190,50 +163,98 @@ class Builder {
 		}
 	}
 
-	setSassRule(isModule, isMinicss) {
+	setLessRule(isModule,isMinicss) {
 		return {
-			test: /\.scss$/,
+			test: /\.less$/,
 			use: [
-				isMinicss ? rspack.CssExtractRspackPlugin.loader : "style-loader",
+				isMinicss ? rspack.CssExtractRspackPlugin.loader : path.resolve(__dirname, '../../node_modules/style-loader'),
 				{
-					loader: "css-loader",
+					loader: path.resolve(__dirname, '../../node_modules/css-loader'),
 					options: {
 						modules: isModule
 							? {
-									mode: "local",
-									exportGlobals: true,
-									localIdentName:
-										"[path][name]__[local]--[hash:base64:5]",
+								mode: "local",
+								exportGlobals: true,
+								localIdentName:
+									"[path][name]__[local]--[hash:base64:5]",
 							  }
 							: false,
 					},
 				},
-				"postcss-loader",
-				"sass-loader",
+				{
+					loader: path.resolve(__dirname, '../../node_modules/postcss-loader'),
+					options: {
+						postcssOptions: {
+							plugins: [require('autoprefixer')],
+						},
+					},
+				},
+				{
+					loader: path.resolve(__dirname, '../../node_modules/less-loader'),
+					options: { lessOptions: { javascriptEnabled: true } },
+				},
+			],
+		}
+	}
+
+	setSassRule(isModule, isMinicss) {
+		return {
+			test: /\.s[ac]ss$/,
+			use: [
+				isMinicss ? rspack.CssExtractRspackPlugin.loader : path.resolve(__dirname, '../../node_modules/style-loader'),
+				{
+					loader: path.resolve(__dirname, '../../node_modules/css-loader'),
+					options: {
+						modules: isModule
+							? {
+								mode: "local",
+								exportGlobals: true,
+								localIdentName:
+									"[path][name]__[local]--[hash:base64:5]",
+							  }
+							: false,
+					},
+				},
+				{
+					loader: path.resolve(__dirname, '../../node_modules/postcss-loader'),
+					options: {
+						postcssOptions: {
+							plugins: [require('autoprefixer')],
+						},
+					},
+				},
+				path.resolve(__dirname, '../../node_modules/sass-loader'),
 			],
 		}
 	}
 
 	setStylusRule(isModule, isMinicss) {
 		return {
-			test: /\.sty(l|lus)$/,
+			test: /\.styl$/,
 			use: [
-				isMinicss ? rspack.CssExtractRspackPlugin.loader : "style-loader",
+				isMinicss ? rspack.CssExtractRspackPlugin.loader : path.resolve(__dirname, '../../node_modules/style-loader'),
 				{
-					loader: "css-loader",
+					loader: path.resolve(__dirname, '../../node_modules/css-loader'),
 					options: {
 						modules: isModule
 							? {
-									mode: "local",
-									exportGlobals: true,
-									localIdentName:
-										"[path][name]__[local]--[hash:base64:5]",
+								mode: "local",
+								exportGlobals: true,
+								localIdentName:
+									"[path][name]__[local]--[hash:base64:5]",
 							  }
 							: false,
 					},
 				},
-				"postcss-loader",
-				"stylus-loader",
+				{
+					loader: path.resolve(__dirname, '../../node_modules/postcss-loader'),
+					options: {
+						postcssOptions: {
+							plugins: [require('autoprefixer')],
+						},
+					},
+				},
+				path.resolve(__dirname, '../../node_modules/stylus-loader'),
 			],
 		}
 	}
@@ -243,13 +264,6 @@ class Builder {
 			filename: "static/css/[name].[contenthash].css",
 		})
 	}
-
-	// setOptimizeCssAssetsPlugin() {
-	// 	return new OptimizeCssAssetsPlugin({
-	// 		assetNameRegExp: /\.css$/g,
-	// 		cssProcessor: require("cssnano"),
-	// 	})
-	// }
 
 	setDevServer(devServer) {
 		return (
