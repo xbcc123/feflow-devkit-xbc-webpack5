@@ -51,7 +51,7 @@ module.exports = async (ctx) => {
       watch: true,
     },
     client: {
-      overlay: true,      // 显示编译错误在浏览器
+      overlay: false,      // 显示编译错误在浏览器
       logging: "warn",    // 替代 clientLogLevel 和 noInfo
       progress: true,     // 浏览器端显示进度条
     },
